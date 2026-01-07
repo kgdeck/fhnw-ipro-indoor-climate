@@ -134,19 +134,69 @@ Got an error? Check these tips.
     ```
 
 ### Store data in CSV format into a file
-...
+Sensor data sent from the Microbit via USB/Serial should be saved as a CSV file so it can be analyzed later.
+
+- Choose a programming language (e.g., Python or Java) that can read data from the serial port.
+- Open/create a file with the .csv extension in your program.
+- Write each measurement line in the format _Timestamp,CO2_Value into the file.
+- Close the file when the program ends.
+
+Python example
+```console
+import serial, time, csv
+
+port = serial.Serial('/dev/tty.usbmodem102', baudrate=115200)
+with open('data.csv', 'a', newline='') as file:
+    writer = csv.writer(file)
+    writer.writerow(["Timestamp", "CO2"])
+    while True:
+        line = port.readline().decode('utf-8').strip()
+        writer.writerow([time.time(), line])
+```
 
 ### Open a CSV file as a spreadsheet
-...
+View the saved CSV data in a spreadsheet program such as Excel or Google Sheets.
+
+- Open Excel, LibreOffice Calc, or Google Sheets.
+- Import the CSV file.
+- Select comma as the delimiter.
+- Check if the columns are correctly separated.
 
 ### Store data into a database with SQL
-...
+Import CSV data into a relational database to enable more complex queries.
+
+- Install a local database (e.g., SQLite, PostgreSQL, or MySQL).
+- Create a table:
+```console
+CREATE TABLE climate_data (
+    timestamp REAL,
+    co2 REAL
+);
+```
+- Import the CSV data or write directly to the database from your program (e.g., with Python’s sqlite3 module).
+```console
+import sqlite3, time
+
+conn = sqlite3.connect('climate.db')
+c = conn.cursor()
+c.execute("INSERT INTO climate_data VALUES (?, ?)", (time.time(), co2_value))
+conn.commit()
+```
 
 ### Read data from a database with SQL
-...
+Retrieve, filter, and sort stored data.
+
+- Open your database tool or use SQL directly.
+- Run a query:
+```console
+SELECT timestamp, co2 FROM climate_data
+WHERE co2 > 1000
+ORDER BY timestamp DESC;
+```
+- Export the result as CSV for visualization if needed.
 
 ### Run a database as a local service
-...
+Keep the database running in the background as a service so you can insert/query data anytime.
 
 ## Side quests
 To learn more, consider these side quests.
